@@ -4,7 +4,7 @@ struct RootView: View {
     @EnvironmentObject var store: AppStore
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             Theme.bg.ignoresSafeArea()
 
             Group {
@@ -15,43 +15,48 @@ struct RootView: View {
                 default: DiscoverView()
                 }
             }
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            BottomBar()
+            .padding(.bottom, 70)
+
+            PremiumTabBar()
         }
     }
 }
 
-struct BottomBar: View {
+struct PremiumTabBar: View {
     @EnvironmentObject var store: AppStore
-    let items = [
-        ("square.grid.2x2.fill","Vicini"),
-        ("star.fill","Salvati"),
-        ("bubble.left.and.bubble.right.fill","Chat"),
-        ("person.crop.circle.fill","Profilo")
+
+    private let items = [
+        ("square.grid.2x2.fill", "Scopri"),
+        ("star.fill", "Preferiti"),
+        ("bubble.left.and.bubble.right.fill", "Messaggi"),
+        ("person.crop.circle.fill", "Profilo")
     ]
 
     var body: some View {
-        HStack {
-            ForEach(items.indices, id:\.self) { i in
+        HStack(spacing: 0) {
+            ForEach(items.indices, id: \.self) { index in
                 Button {
-                    store.tab = i
-                } label: {
-                    VStack(spacing:4) {
-                        Image(systemName: items[i].0)
-                            .font(.system(size:20, weight:.semibold))
-                        Text(items[i].1)
-                            .font(.caption2.weight(.semibold))
+                    withAnimation(.spring(response: 0.28, dampingFraction: 0.82)) {
+                        store.tab = index
                     }
-                    .foregroundStyle(store.tab == i ? Theme.accent : Color.white.opacity(0.48))
-                    .frame(maxWidth:.infinity)
-                    .frame(height:62)
+                } label: {
+                    VStack(spacing: 5) {
+                        Image(systemName: items[index].0)
+                            .font(.system(size: 19, weight: .semibold))
+                        Text(items[index].1)
+                            .font(.system(size: 10, weight: .semibold))
+                    }
+                    .foregroundStyle(store.tab == index ? Theme.accent : Color.white.opacity(0.42))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
                 }
             }
         }
-        .background(Color.black.opacity(0.96))
-        .overlay(alignment:.top) {
-            Rectangle().fill(Color.white.opacity(0.08)).frame(height:1)
+        .padding(.horizontal, 6)
+        .background(.ultraThinMaterial)
+        .background(Color.black.opacity(0.86))
+        .overlay(alignment: .top) {
+            Rectangle().fill(Theme.divider).frame(height: 1)
         }
     }
 }
