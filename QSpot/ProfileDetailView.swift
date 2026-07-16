@@ -43,7 +43,7 @@ struct ProfileDetailView: View {
                         .font(.system(size: 30, weight: .black, design: .rounded))
                     if profile.isVerified {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundStyle(AppTheme.cyan)
+                            .foregroundStyle(AppTheme.aqua)
                     }
                 }
                 Text(profile.headline)

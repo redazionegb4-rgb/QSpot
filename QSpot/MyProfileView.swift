@@ -68,7 +68,7 @@ struct SettingRow: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .frame(width: 28)
-                .foregroundStyle(AppTheme.cyan)
+                .foregroundStyle(AppTheme.aqua)
             Text(title)
             Spacer()
             Image(systemName: "chevron.right")

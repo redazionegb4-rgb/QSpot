@@ -48,7 +48,7 @@ struct MessagesView: View {
                                             Text("\(chat.unread)")
                                                 .font(.caption2.bold())
                                                 .frame(width: 22, height: 22)
-                                                .background(AppTheme.pink)
+                                                .background(AppTheme.blue)
                                                 .clipShape(Circle())
                                         }
                                     }

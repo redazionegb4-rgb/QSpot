@@ -14,7 +14,11 @@ struct DiscoverView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                AppTheme.background.ignoresSafeArea()
+                ZStack {
+                    AppTheme.background
+                    AppTheme.subtleGradient.opacity(0.8)
+                }
+                .ignoresSafeArea()
 
                 ScrollView {
                     VStack(spacing: 20) {
@@ -45,8 +49,13 @@ struct DiscoverView: View {
         VStack(spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("QSpot")
-                        .font(.system(size: 32, weight: .black, design: .rounded))
+                    HStack(spacing: 10) {
+                        Image(systemName: "q.circle.fill")
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundStyle(AppTheme.gradient)
+                        Text("QSpot")
+                            .font(.system(size: 31, weight: .black, design: .rounded))
+                    }
                     Text("Persone vicino a te")
                         .foregroundStyle(.secondary)
                 }
@@ -116,7 +125,7 @@ struct ProfileTile: View {
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [AppTheme.purple.opacity(0.75), AppTheme.cyan.opacity(0.22), Color.black.opacity(0.88)],
+                        colors: [AppTheme.violet.opacity(0.75), AppTheme.aqua.opacity(0.22), Color.black.opacity(0.88)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
@@ -138,7 +147,7 @@ struct ProfileTile: View {
                         .font(.headline.bold())
                     if profile.isVerified {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundStyle(AppTheme.cyan)
+                            .foregroundStyle(AppTheme.aqua)
                     }
                 }
 
@@ -149,7 +158,7 @@ struct ProfileTile: View {
 
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(profile.isOnline ? Color.green : Color.gray)
+                        .fill(profile.isOnline ? AppTheme.success : Color.gray)
                         .frame(width: 7, height: 7)
                     Text(profile.distance)
                         .font(.caption2.weight(.semibold))
@@ -166,7 +175,7 @@ struct ProfileTile: View {
                     } label: {
                         Image(systemName: store.favorites.contains(profile.id) ? "heart.fill" : "heart")
                             .font(.headline)
-                            .foregroundStyle(store.favorites.contains(profile.id) ? AppTheme.pink : .white)
+                            .foregroundStyle(store.favorites.contains(profile.id) ? AppTheme.blue : .white)
                             .frame(width: 38, height: 38)
                             .background(.black.opacity(0.28))
                             .clipShape(Circle())

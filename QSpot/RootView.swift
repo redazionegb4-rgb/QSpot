@@ -21,6 +21,6 @@ struct RootView: View {
                 .tag(3)
                 .tabItem { Label("Profilo", systemImage: "person.crop.circle.fill") }
         }
-        .tint(AppTheme.pink)
+        .tint(AppTheme.blue)
     }
 }
