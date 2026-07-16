@@ -38,7 +38,7 @@ struct DiscoverView: View {
                 HStack(spacing:9) {
                     ZStack {
                         Circle().fill(Theme.accent).frame(width:34,height:34)
-                        Text("Q").font(.headline.black()).foregroundStyle(.black)
+                        Text("Q").font(.system(size: 17, weight: .black, design: .rounded)).foregroundStyle(.black)
                     }
                     Text("QSPOT")
                         .font(.system(size:25, weight:.black, design:.rounded))
