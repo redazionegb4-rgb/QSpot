@@ -30,7 +30,7 @@ struct WelcomeView: View {
                         VStack(spacing: 34) {
                             Spacer()
                             ZStack {
-                                Circle().fill(LinearGradient(colors: [.appPurple, .appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 210, height: 210).blur(radius: 1)
+                                Circle().fill(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 210, height: 210).blur(radius: 1)
                                 Image(systemName: slides[index].0).font(.system(size: 78, weight: .semibold)).foregroundStyle(.white)
                             }
                             VStack(spacing: 14) {
@@ -50,7 +50,7 @@ struct WelcomeView: View {
                 } label: {
                     HStack { Text(page == slides.count - 1 ? "Inizia" : "Continua"); Image(systemName: "arrow.right") }
                         .font(.headline).frame(maxWidth: .infinity).padding(.vertical, 17)
-                        .background(LinearGradient(colors: [.appPurple, .appPink], startPoint: .leading, endPoint: .trailing), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .background(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .leading, endPoint: .trailing), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                         .foregroundStyle(.white)
                 }
                 .padding(.horizontal, 24).padding(.bottom, 22)
@@ -64,7 +64,7 @@ struct BrandMark: View {
     var size: CGFloat = 42
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: size * 0.29, style: .continuous).fill(LinearGradient(colors: [.appPurple, .appPink], startPoint: .topLeading, endPoint: .bottomTrailing))
+            RoundedRectangle(cornerRadius: size * 0.29, style: .continuous).fill(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .topLeading, endPoint: .bottomTrailing))
             Image(systemName: "mappin.and.ellipse").font(.system(size: size * 0.45, weight: .bold)).foregroundStyle(.white)
         }.frame(width: size, height: size)
     }

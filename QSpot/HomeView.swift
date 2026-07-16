@@ -51,9 +51,9 @@ struct HomeView: View {
             }
         }
         .padding(22)
-        .background(LinearGradient(colors: [.appPurple, .appPink], startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+        .background(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
         .overlay(alignment: .topTrailing) { Circle().stroke(.white.opacity(0.18), lineWidth: 36).frame(width: 180).offset(x: 70, y: -65) }
-        .clipped().shadow(color: .appPurple.opacity(0.28), radius: 22, y: 12)
+        .clipped().shadow(color: Color.appPurple.opacity(0.28), radius: 22, y: 12)
     }
 
     private var peopleSection: some View {
@@ -87,7 +87,7 @@ private struct Metric: View {
 
 struct SectionTitle: View {
     let title: String; let action: String
-    var body: some View { HStack { Text(title).font(.title2.bold()); Spacer(); Text(action).font(.subheadline.bold()).foregroundStyle(.appCyan) } }
+    var body: some View { HStack { Text(title).font(.title2.bold()); Spacer(); Text(action).font(.subheadline.bold()).foregroundStyle(Color.appCyan) } }
 }
 
 struct PersonMiniCard: View {
@@ -96,12 +96,12 @@ struct PersonMiniCard: View {
         VStack(alignment: .leading, spacing: 10) {
             ZStack(alignment: .topTrailing) {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(LinearGradient(colors: [.appPurple.opacity(0.75), .appPink.opacity(0.78)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .fill(LinearGradient(colors: [Color.appPurple.opacity(0.75), Color.appPink.opacity(0.78)], startPoint: .topLeading, endPoint: .bottomTrailing))
                     .frame(width: 150, height: 184)
                     .overlay(Image(systemName: person.symbol).font(.system(size: 58, weight: .medium)).foregroundStyle(.white.opacity(0.92)))
                 if person.online { Circle().fill(.green).frame(width: 14, height: 14).overlay(Circle().stroke(.white, lineWidth: 3)).padding(12) }
             }
-            HStack(spacing: 5) { Text("\(person.name), \(person.age)").font(.headline); if person.verified { Image(systemName: "checkmark.seal.fill").font(.caption).foregroundStyle(.appCyan) } }
+            HStack(spacing: 5) { Text("\(person.name), \(person.age)").font(.headline); if person.verified { Image(systemName: "checkmark.seal.fill").font(.caption).foregroundStyle(Color.appCyan) } }
             Text(person.distance).font(.caption).foregroundStyle(.secondary)
         }.frame(width: 150, alignment: .leading)
     }
@@ -111,7 +111,7 @@ struct PlaceRow: View {
     let place: CommunityPlace
     var body: some View {
         HStack(spacing: 14) {
-            ZStack { RoundedRectangle(cornerRadius: 17).fill(Color.appPurple.opacity(0.2)); Image(systemName: place.symbol).font(.title2).foregroundStyle(.appCyan) }.frame(width: 58, height: 58)
+            ZStack { RoundedRectangle(cornerRadius: 17).fill(Color.appPurple.opacity(0.2)); Image(systemName: place.symbol).font(.title2).foregroundStyle(Color.appCyan) }.frame(width: 58, height: 58)
             VStack(alignment: .leading, spacing: 5) {
                 Text(place.name).font(.headline)
                 Text("\(place.category) · \(place.neighborhood)").font(.caption).foregroundStyle(.secondary).lineLimit(1)
@@ -127,9 +127,9 @@ struct EventRow: View {
     let event: CommunityEvent
     var body: some View {
         HStack(spacing: 14) {
-            VStack(spacing: 2) { Text(event.day).font(.caption2.bold()).foregroundStyle(.appPink); Text(event.time).font(.headline) }.frame(width: 66)
+            VStack(spacing: 2) { Text(event.day).font(.caption2.bold()).foregroundStyle(Color.appPink); Text(event.time).font(.headline) }.frame(width: 66)
             Divider().overlay(.white.opacity(0.12)).frame(height: 48)
-            Image(systemName: event.symbol).font(.title2).foregroundStyle(.appPurple).frame(width: 30)
+            Image(systemName: event.symbol).font(.title2).foregroundStyle(Color.appPurple).frame(width: 30)
             VStack(alignment: .leading, spacing: 4) { Text(event.title).font(.headline); Text(event.venue).font(.caption).foregroundStyle(.secondary) }
             Spacer()
             Image(systemName: "chevron.right").foregroundStyle(.secondary)

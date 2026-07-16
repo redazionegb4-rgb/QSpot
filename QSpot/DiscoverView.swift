@@ -27,10 +27,10 @@ private struct PersonGridCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             ZStack(alignment: .topTrailing) {
-                RoundedRectangle(cornerRadius: 25, style: .continuous).fill(LinearGradient(colors: [.appPurple.opacity(0.7), .appPink.opacity(0.7)], startPoint: .topLeading, endPoint: .bottomTrailing)).aspectRatio(0.8, contentMode: .fit).overlay(Image(systemName: person.symbol).font(.system(size: 54)).foregroundStyle(.white.opacity(0.9)))
+                RoundedRectangle(cornerRadius: 25, style: .continuous).fill(LinearGradient(colors: [Color.appPurple.opacity(0.7), Color.appPink.opacity(0.7)], startPoint: .topLeading, endPoint: .bottomTrailing)).aspectRatio(0.8, contentMode: .fit).overlay(Image(systemName: person.symbol).font(.system(size: 54)).foregroundStyle(.white.opacity(0.9)))
                 if person.online { Text("ONLINE").font(.caption2.bold()).padding(.horizontal, 8).padding(.vertical, 5).background(.green, in: Capsule()).padding(10) }
             }
-            HStack(spacing: 4) { Text("\(person.name), \(person.age)").font(.headline); if person.verified { Image(systemName: "checkmark.seal.fill").font(.caption).foregroundStyle(.appCyan) } }
+            HStack(spacing: 4) { Text("\(person.name), \(person.age)").font(.headline); if person.verified { Image(systemName: "checkmark.seal.fill").font(.caption).foregroundStyle(Color.appCyan) } }
             Text(person.headline).font(.caption).foregroundStyle(.secondary).lineLimit(1)
             Label(person.distance, systemImage: "location.fill").font(.caption2).foregroundStyle(.secondary)
         }

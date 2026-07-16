@@ -11,10 +11,10 @@ struct ProfileView: View {
                 VStack(spacing: 22) {
                     HStack { Text("Profilo").font(.system(size: 34, weight: .bold, design: .rounded)); Spacer(); Button(action: {}) { Image(systemName: "gearshape.fill").frame(width: 44, height: 44).glassCard(radius: 15) } }
                     ZStack(alignment: .bottomTrailing) {
-                        Circle().fill(LinearGradient(colors: [.appPurple, .appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 126, height: 126).overlay(Image(systemName: "person.fill").font(.system(size: 54)).foregroundStyle(.white))
-                        Image(systemName: "camera.fill").padding(10).background(.white, in: Circle()).foregroundStyle(.appPurple)
+                        Circle().fill(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 126, height: 126).overlay(Image(systemName: "person.fill").font(.system(size: 54)).foregroundStyle(.white))
+                        Image(systemName: "camera.fill").padding(10).background(.white, in: Circle()).foregroundStyle(Color.appPurple)
                     }
-                    VStack(spacing: 5) { HStack { Text("Il tuo profilo").font(.title2.bold()); Image(systemName: "checkmark.seal.fill").foregroundStyle(.appCyan) }; Text("Completa il profilo per farti conoscere").foregroundStyle(.secondary) }
+                    VStack(spacing: 5) { HStack { Text("Il tuo profilo").font(.title2.bold()); Image(systemName: "checkmark.seal.fill").foregroundStyle(Color.appCyan) }; Text("Completa il profilo per farti conoscere").foregroundStyle(.secondary) }
                     HStack(spacing: 10) { ProfileMetric(value: "0", label: "Like"); ProfileMetric(value: "0", label: "Match"); ProfileMetric(value: "3", label: "Preferiti") }
                     VStack(spacing: 0) {
                         ProfileRow(icon: "person.text.rectangle", title: "Modifica profilo", subtitle: "Foto, bio e interessi")
@@ -38,5 +38,5 @@ private struct ProfileMetric: View {
 }
 private struct ProfileRow: View {
     let icon: String; let title: String; let subtitle: String
-    var body: some View { HStack(spacing: 13) { Image(systemName: icon).font(.title3).foregroundStyle(.appCyan).frame(width: 28); VStack(alignment: .leading, spacing: 3) { Text(title).font(.headline); Text(subtitle).font(.caption).foregroundStyle(.secondary) }; Spacer(); Image(systemName: "chevron.right").foregroundStyle(.secondary) }.padding(16) }
+    var body: some View { HStack(spacing: 13) { Image(systemName: icon).font(.title3).foregroundStyle(Color.appCyan).frame(width: 28); VStack(alignment: .leading, spacing: 3) { Text(title).font(.headline); Text(subtitle).font(.caption).foregroundStyle(.secondary) }; Spacer(); Image(systemName: "chevron.right").foregroundStyle(.secondary) }.padding(16) }
 }

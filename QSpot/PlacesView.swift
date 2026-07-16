@@ -10,7 +10,7 @@ struct PlacesView: View {
             Map(position: $position, selection: $selected) {
                 UserAnnotation()
                 ForEach(DemoContent.places) { place in
-                    Marker(place.name, systemImage: place.symbol, coordinate: place.coordinate).tint(.appPurple).tag(place)
+                    Marker(place.name, systemImage: place.symbol, coordinate: place.coordinate).tint(Color.appPurple).tag(place)
                 }
             }.mapStyle(.standard(elevation: .realistic, pointsOfInterest: .including([.nightlife, .cafe, .park])))
             HStack(spacing: 12) {
@@ -34,10 +34,10 @@ struct PlaceDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack { Button(action: { dismiss() }) { Image(systemName: "xmark").frame(width: 42, height: 42).glassCard(radius: 15) }; Spacer(); Button(action: {}) { Image(systemName: "heart").frame(width: 42, height: 42).glassCard(radius: 15) } }
-                    ZStack { RoundedRectangle(cornerRadius: 30).fill(LinearGradient(colors: [.appPurple, .appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(height: 220); Image(systemName: place.symbol).font(.system(size: 72)).foregroundStyle(.white) }
+                    ZStack { RoundedRectangle(cornerRadius: 30).fill(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(height: 220); Image(systemName: place.symbol).font(.system(size: 72)).foregroundStyle(.white) }
                     VStack(alignment: .leading, spacing: 8) { Text(place.name).font(.largeTitle.bold()); Text("\(place.category) · \(place.neighborhood)").foregroundStyle(.secondary); HStack { Label(String(format: "%.1f", place.rating), systemImage: "star.fill").foregroundStyle(.yellow); Text(place.distance); Spacer(); Text(place.isOpen ? "APERTO ORA" : "CHIUSO").font(.caption.bold()).foregroundStyle(place.isOpen ? .green : .secondary) } }
                     Text("Uno spazio selezionato dalla community. Controlla gli orari e raggiungilo direttamente con Apple Maps.").font(.body).foregroundStyle(.secondary)
-                    Button(action: openMaps) { Label("Portami qui", systemImage: "arrow.triangle.turn.up.right.diamond.fill").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 16).background(LinearGradient(colors: [.appPurple, .appPink], startPoint: .leading, endPoint: .trailing), in: RoundedRectangle(cornerRadius: 18)).foregroundStyle(.white) }
+                    Button(action: openMaps) { Label("Portami qui", systemImage: "arrow.triangle.turn.up.right.diamond.fill").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 16).background(LinearGradient(colors: [Color.appPurple, Color.appPink], startPoint: .leading, endPoint: .trailing), in: RoundedRectangle(cornerRadius: 18)).foregroundStyle(.white) }
                 }.padding(18)
             }
         }.foregroundStyle(.white)

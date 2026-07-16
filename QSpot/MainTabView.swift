@@ -14,6 +14,6 @@ struct MainTabView: View {
             NavigationStack { ProfileView() }
                 .tabItem { Label("Profilo", systemImage: "person.crop.circle.fill") }
         }
-        .tint(.appPurple)
+        .tint(Color.appPurple)
     }
 }
