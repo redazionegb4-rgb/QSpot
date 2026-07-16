@@ -2,59 +2,19 @@ import SwiftUI
 
 struct FavoritesView: View {
     @EnvironmentObject var store: AppStore
-
-    private var saved: [Person] {
-        store.people.filter { store.favorites.contains($0.id) }
-    }
-
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("Preferiti")
-                        .font(.system(size: 29, weight: .bold))
-                        .padding(.top, 10)
-
-                    if saved.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "star")
-                                .font(.system(size: 42))
-                                .foregroundStyle(Theme.accent)
-                            Text("Nessun preferito")
-                                .font(.title3.bold())
-                            Text("Salva i profili che vuoi ritrovare rapidamente.")
-                                .font(.subheadline)
-                                .foregroundStyle(Theme.secondaryText)
-                                .multilineTextAlignment(.center)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 120)
-                    } else {
-                        LazyVGrid(
-                            columns: [
-                                GridItem(.flexible(), spacing: 7),
-                                GridItem(.flexible(), spacing: 7),
-                                GridItem(.flexible(), spacing: 7)
-                            ],
-                            spacing: 7
-                        ) {
-                            ForEach(saved) { person in
-                                NavigationLink(value: person) {
-                                    CompactPersonCard(person: person)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
+                VStack(alignment:.leading,spacing:16) {
+                    HStack { Text("Esplora").font(.system(size:29,weight:.bold)); Spacer(); Image(systemName:"slider.horizontal.3").foregroundStyle(Theme.lilac) }
+                    HStack(spacing:8){chip("Per te",true);chip("Nuovi");chip("Vicino");chip("Online")}
+                    LazyVGrid(columns:[GridItem(.flexible(),spacing:8),GridItem(.flexible(),spacing:8)],spacing:8) {
+                        ForEach(store.people) { p in NavigationLink(value:p){SuggestedCard(person:p).frame(maxWidth:.infinity)}.buttonStyle(.plain) }
                     }
-                }
-                .padding(.horizontal, 10)
-                .padding(.bottom, 18)
+                }.padding(.horizontal,14).padding(.top,10).padding(.bottom,18)
             }
-            .background(Theme.bg)
-            .navigationDestination(for: Person.self) {
-                PersonDetailView(person: $0)
-            }
-            .toolbar(.hidden, for: .navigationBar)
+            .background(Theme.bg).navigationDestination(for:Person.self){PersonDetailView(person:$0)}.toolbar(.hidden,for:.navigationBar)
         }
     }
+    private func chip(_ s:String,_ active:Bool=false)->some View { Text(s).font(.subheadline.weight(.semibold)).padding(.horizontal,14).frame(height:34).background(active ? Theme.purple : Theme.panel).clipShape(Capsule()) }
 }
