@@ -6,91 +6,83 @@ struct DiscoverView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 18) {
+                VStack(spacing:16) {
                     header
-                    filterBar
+                    filters
 
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible(), spacing: 10),
-                            GridItem(.flexible(), spacing: 10)
-                        ],
-                        spacing: 10
-                    ) {
-                        ForEach(store.visibleProfiles) { profile in
-                            NavigationLink(value: profile) {
-                                ProfileCard(profile: profile)
+                    LazyVGrid(columns:[
+                        GridItem(.flexible(), spacing:8),
+                        GridItem(.flexible(), spacing:8)
+                    ], spacing:8) {
+                        ForEach(store.filtered) { person in
+                            NavigationLink(value: person) {
+                                PersonCard(person: person)
                             }
                             .buttonStyle(.plain)
                         }
                     }
                 }
-                .padding(.horizontal, 14)
-                .padding(.top, 8)
-                .padding(.bottom, 18)
+                .padding(.horizontal,12)
+                .padding(.top,8)
+                .padding(.bottom,16)
             }
-            .background(QTheme.background)
-            .navigationDestination(for: DatingProfile.self) { profile in
-                ProfileDetailView(profile: profile)
-            }
-            .toolbar(.hidden, for: .navigationBar)
+            .background(Theme.bg)
+            .navigationDestination(for: Person.self) { PersonDetailView(person:$0) }
+            .toolbar(.hidden, for:.navigationBar)
         }
     }
 
     private var header: some View {
-        VStack(spacing: 14) {
+        VStack(spacing:12) {
             HStack {
-                Text("QSPOT")
-                    .font(.system(size: 27, weight: .black, design: .rounded))
-                    .tracking(-1)
+                HStack(spacing:9) {
+                    ZStack {
+                        Circle().fill(Theme.accent).frame(width:34,height:34)
+                        Text("Q").font(.headline.black()).foregroundStyle(.black)
+                    }
+                    Text("QSPOT")
+                        .font(.system(size:25, weight:.black, design:.rounded))
+                        .tracking(-1)
+                }
                 Spacer()
                 Button {} label: {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(QTheme.blue)
-                        .frame(width: 42, height: 42)
-                        .background(QTheme.panelRaised)
+                    Image(systemName:"slider.horizontal.3")
+                        .foregroundStyle(.black)
+                        .frame(width:38,height:38)
+                        .background(Theme.accent)
                         .clipShape(Circle())
                 }
             }
 
-            HStack(spacing: 10) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                TextField("Cerca", text: $store.searchText)
-                    .textInputAutocapitalization(.never)
+            HStack(spacing:10) {
+                Image(systemName:"magnifyingglass").foregroundStyle(.secondary)
+                TextField("Cerca", text:$store.query)
             }
-            .padding(.horizontal, 14)
-            .frame(height: 44)
-            .background(QTheme.panel)
-            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+            .padding(.horizontal,14)
+            .frame(height:44)
+            .background(Theme.card)
+            .clipShape(RoundedRectangle(cornerRadius:14, style:.continuous))
         }
     }
 
-    private var filterBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 9) {
-                ForEach(store.filters, id: \.self) { filter in
+    private var filters: some View {
+        ScrollView(.horizontal, showsIndicators:false) {
+            HStack(spacing:8) {
+                ForEach(["Tutti","Online","Verificati","Vicini"], id:\.self) { item in
                     Button {
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            store.selectedFilter = filter
-                        }
+                        store.filter = item
                     } label: {
-                        HStack(spacing: 6) {
-                            if filter == "Online" {
-                                Circle().fill(QTheme.green).frame(width: 7, height: 7)
+                        HStack(spacing:6) {
+                            if item == "Online" {
+                                Circle().fill(Color.green).frame(width:7,height:7)
                             }
-                            Text(filter)
+                            Text(item)
                         }
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 15)
-                        .frame(height: 38)
-                        .background(
-                            store.selectedFilter == filter
-                            ? AnyShapeStyle(QTheme.accentGradient)
-                            : AnyShapeStyle(QTheme.panel)
-                        )
+                        .foregroundStyle(store.filter == item ? .black : .white)
+                        .padding(.horizontal,14)
+                        .frame(height:36)
+                        .background(store.filter == item ? Theme.accent : Theme.card)
                         .clipShape(Capsule())
                     }
                 }
@@ -99,41 +91,40 @@ struct DiscoverView: View {
     }
 }
 
-struct ProfileCard: View {
+struct PersonCard: View {
     @EnvironmentObject var store: AppStore
-    let profile: DatingProfile
+    let person: Person
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            Image(profile.imageName)
+        ZStack(alignment:.bottomLeading) {
+            Image(person.image)
                 .resizable()
                 .scaledToFill()
-                .frame(height: 236)
+                .frame(height:245)
                 .clipped()
 
             LinearGradient(
-                colors: [.clear, .black.opacity(0.15), .black.opacity(0.96)],
-                startPoint: .top,
-                endPoint: .bottom
+                colors:[.clear,.black.opacity(0.05),.black.opacity(0.92)],
+                startPoint:.top,
+                endPoint:.bottom
             )
 
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(spacing: 5) {
-                    Text("\(profile.name), \(profile.age)")
+            VStack(alignment:.leading, spacing:4) {
+                HStack(spacing:5) {
+                    Text("\(person.name), \(person.age)")
                         .font(.headline.bold())
-                    if profile.verified {
-                        Image(systemName: "checkmark.seal.fill")
+                    if person.verified {
+                        Image(systemName:"checkmark.seal.fill")
                             .font(.caption)
-                            .foregroundStyle(QTheme.blue)
+                            .foregroundStyle(Theme.accent)
                     }
                 }
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(profile.online ? QTheme.green : Color.gray)
-                        .frame(width: 7, height: 7)
-                    Text(profile.distance)
+                HStack(spacing:6) {
+                    Circle().fill(person.online ? Color.green : Color.gray)
+                        .frame(width:7,height:7)
+                    Text(person.distance)
                         .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.78))
+                        .foregroundStyle(Color.white.opacity(0.75))
                 }
             }
             .padding(11)
@@ -142,13 +133,12 @@ struct ProfileCard: View {
                 HStack {
                     Spacer()
                     Button {
-                        store.toggleFavorite(profile)
+                        store.toggle(person)
                     } label: {
-                        Image(systemName: store.favorites.contains(profile.id) ? "star.fill" : "star")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(store.favorites.contains(profile.id) ? QTheme.yellow : .white)
-                            .frame(width: 35, height: 35)
-                            .background(.black.opacity(0.32))
+                        Image(systemName: store.favorites.contains(person.id) ? "star.fill" : "star")
+                            .foregroundStyle(store.favorites.contains(person.id) ? Theme.accent : .white)
+                            .frame(width:34,height:34)
+                            .background(.black.opacity(0.36))
                             .clipShape(Circle())
                     }
                 }
@@ -156,11 +146,7 @@ struct ProfileCard: View {
             }
             .padding(9)
         }
-        .frame(height: 236)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
-        )
+        .frame(height:245)
+        .clipShape(RoundedRectangle(cornerRadius:16, style:.continuous))
     }
 }
