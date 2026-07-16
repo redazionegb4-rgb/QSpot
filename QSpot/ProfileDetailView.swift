@@ -2,128 +2,162 @@ import SwiftUI
 
 struct ProfileDetailView: View {
     @EnvironmentObject var store: AppStore
+    @Environment(\.dismiss) private var dismiss
     let profile: DatingProfile
 
     var body: some View {
-        ZStack {
-            AppTheme.background.ignoresSafeArea()
-
-            ScrollView {
-                VStack(spacing: 18) {
-                    hero
-                    about
-                    interests
-                    actions
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 32)
+        ScrollView {
+            VStack(spacing: 0) {
+                hero
+                detailArea
             }
         }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
+        .background(QTheme.background)
+        .ignoresSafeArea(edges: .top)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private var hero: some View {
         ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(AppTheme.gradient)
-                .frame(height: 390)
-                .overlay(
-                    Image(systemName: profile.symbol)
-                        .font(.system(size: 145, weight: .ultraLight))
-                        .foregroundStyle(.white.opacity(0.88))
-                )
+            Image(profile.heroImageName)
+                .resizable()
+                .scaledToFill()
+                .frame(height: 475)
+                .clipped()
 
-            LinearGradient(colors: [.clear, .black.opacity(0.9)], startPoint: .top, endPoint: .bottom)
-                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+            LinearGradient(
+                colors: [.black.opacity(0.05), .clear, QTheme.background.opacity(0.98)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
 
-            VStack(alignment: .leading, spacing: 7) {
-                HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 7) {
                     Text("\(profile.name), \(profile.age)")
                         .font(.system(size: 30, weight: .black, design: .rounded))
-                    if profile.isVerified {
+                    if profile.verified {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundStyle(AppTheme.aqua)
+                            .foregroundStyle(QTheme.blue)
                     }
                 }
-                Text(profile.headline)
-                    .foregroundStyle(.white.opacity(0.86))
-                Label(profile.distance, systemImage: "location.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white.opacity(0.72))
+                HStack(spacing: 7) {
+                    Circle().fill(profile.online ? QTheme.green : .gray).frame(width: 8, height: 8)
+                    Text(profile.distance)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.78))
+                }
             }
-            .padding(22)
+            .padding(.horizontal, 18)
+            .padding(.bottom, 25)
+
+            VStack {
+                HStack {
+                    Button { dismiss() } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.title3.bold())
+                            .foregroundStyle(.white)
+                            .frame(width: 42, height: 42)
+                            .background(.black.opacity(0.38))
+                            .clipShape(Circle())
+                    }
+                    Spacer()
+                    Button {} label: {
+                        Image(systemName: "ellipsis")
+                            .font(.title3.bold())
+                            .foregroundStyle(.white)
+                            .frame(width: 42, height: 42)
+                            .background(.black.opacity(0.38))
+                            .clipShape(Circle())
+                    }
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+            .padding(.top, 52)
         }
+        .frame(height: 475)
     }
 
-    private var about: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Su di me")
-                .font(.title3.bold())
+    private var detailArea: some View {
+        VStack(alignment: .leading, spacing: 18) {
             Text(profile.bio)
-                .foregroundStyle(.secondary)
+                .font(.body)
+                .foregroundStyle(.white.opacity(0.90))
                 .lineSpacing(4)
-        }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard()
-    }
 
-    private var interests: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Interessi")
-                .font(.title3.bold())
-            FlowLayout(spacing: 8) {
-                ForEach(profile.interests, id: \.self) { interest in
-                    Text(interest)
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.horizontal, 13)
-                        .padding(.vertical, 9)
-                        .background(AppTheme.surfaceStrong)
-                        .clipShape(Capsule())
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(profile.interests, id: \.self) { interest in
+                        Text(interest)
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 12)
+                            .frame(height: 34)
+                            .background(QTheme.panelRaised)
+                            .clipShape(Capsule())
+                    }
+                }
+            }
+
+            HStack(spacing: 18) {
+                ActionCircle(icon: "face.smiling.inverse", tint: QTheme.yellow)
+                ActionCircle(icon: "ellipsis.message.fill", tint: QTheme.violet)
+                Button {
+                    store.toggleFavorite(profile)
+                } label: {
+                    ActionCircleContent(
+                        icon: store.favorites.contains(profile.id) ? "star.fill" : "star",
+                        tint: store.favorites.contains(profile.id) ? QTheme.yellow : .white
+                    )
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            Divider().overlay(Color.white.opacity(0.08))
+
+            HStack {
+                Text("Foto")
+                    .font(.title3.bold())
+                Spacer()
+                Text("Vedi tutte")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(QTheme.blue)
+            }
+
+            HStack(spacing: 9) {
+                ForEach([profile.imageName, profile.heroImageName, "beach_luca"], id: \.self) { name in
+                    Image(name)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 118)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
             }
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard()
-    }
-
-    private var actions: some View {
-        HStack(spacing: 12) {
-            Button {
-                store.toggleFavorite(profile)
-            } label: {
-                Image(systemName: store.favorites.contains(profile.id) ? "heart.fill" : "heart")
-                    .font(.title3.bold())
-                    .frame(width: 58, height: 58)
-                    .background(AppTheme.surfaceStrong)
-                    .clipShape(Circle())
-            }
-
-            Button {
-            } label: {
-                Label("Scrivi", systemImage: "paperplane.fill")
-                    .font(.headline.bold())
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 58)
-                    .background(AppTheme.gradient)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            }
-        }
+        .padding(.horizontal, 18)
+        .padding(.bottom, 32)
     }
 }
 
-struct FlowLayout<Content: View>: View {
-    let spacing: CGFloat
-    @ViewBuilder var content: Content
-
-    init(spacing: CGFloat = 8, @ViewBuilder content: () -> Content) {
-        self.spacing = spacing
-        self.content = content()
-    }
-
+struct ActionCircle: View {
+    let icon: String
+    let tint: Color
     var body: some View {
-        HStack(spacing: spacing) { content }
+        ActionCircleContent(icon: icon, tint: tint)
+    }
+}
+
+struct ActionCircleContent: View {
+    let icon: String
+    let tint: Color
+    var body: some View {
+        Image(systemName: icon)
+            .font(.system(size: 24, weight: .semibold))
+            .foregroundStyle(tint)
+            .frame(width: 66, height: 66)
+            .background(QTheme.panelRaised)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.white.opacity(0.08)))
     }
 }

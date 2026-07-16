@@ -1,9 +1,9 @@
-QSpot Premium Dating Rebuild
-- Progetto SwiftUI iOS 17
+QSpot Build 14 Neon
+- Nuovo design ispirato al concept approvato
+- Home a griglia con foto reali
+- Profilo immersivo
+- Preferiti, Chat, Profilo
+- Nuova icona Q neon
 - Bundle ID: com.dmb.qspot
-- Build: 13
-- Nuova identità cromatica nero, blu elettrico e violetto
-- Nuova icona Q cristallo premium
-- Nessuna dipendenza esterna
-- Dati demo locali
-- Aprire QSpot.xcodeproj
+- Build: 14
+- iOS 17 / Xcode 15

@@ -3,41 +3,33 @@ import SwiftUI
 struct DiscoverView: View {
     @EnvironmentObject var store: AppStore
 
-    private var filteredProfiles: [DatingProfile] {
-        guard !store.searchText.isEmpty else { return store.profiles }
-        return store.profiles.filter {
-            $0.name.localizedCaseInsensitiveContains(store.searchText) ||
-            $0.headline.localizedCaseInsensitiveContains(store.searchText)
-        }
-    }
-
     var body: some View {
         NavigationStack {
-            ZStack {
-                ZStack {
-                    AppTheme.background
-                    AppTheme.subtleGradient.opacity(0.8)
-                }
-                .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 18) {
+                    header
+                    filterBar
 
-                ScrollView {
-                    VStack(spacing: 20) {
-                        header
-                        quickFilters
-
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
-                            ForEach(filteredProfiles) { profile in
-                                NavigationLink(value: profile) {
-                                    ProfileTile(profile: profile)
-                                }
-                                .buttonStyle(.plain)
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.flexible(), spacing: 10),
+                            GridItem(.flexible(), spacing: 10)
+                        ],
+                        spacing: 10
+                    ) {
+                        ForEach(store.visibleProfiles) { profile in
+                            NavigationLink(value: profile) {
+                                ProfileCard(profile: profile)
                             }
+                            .buttonStyle(.plain)
                         }
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 24)
                 }
+                .padding(.horizontal, 14)
+                .padding(.top, 8)
+                .padding(.bottom, 18)
             }
+            .background(QTheme.background)
             .navigationDestination(for: DatingProfile.self) { profile in
                 ProfileDetailView(profile: profile)
             }
@@ -48,26 +40,16 @@ struct DiscoverView: View {
     private var header: some View {
         VStack(spacing: 14) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 10) {
-                        Image(systemName: "q.circle.fill")
-                            .font(.system(size: 30, weight: .bold))
-                            .foregroundStyle(AppTheme.gradient)
-                        Text("QSpot")
-                            .font(.system(size: 31, weight: .black, design: .rounded))
-                    }
-                    Text("Persone vicino a te")
-                        .foregroundStyle(.secondary)
-                }
-
+                Text("QSPOT")
+                    .font(.system(size: 27, weight: .black, design: .rounded))
+                    .tracking(-1)
                 Spacer()
-
-                Button {
-                } label: {
+                Button {} label: {
                     Image(systemName: "slider.horizontal.3")
-                        .font(.title3.bold())
-                        .frame(width: 46, height: 46)
-                        .background(AppTheme.surfaceStrong)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(QTheme.blue)
+                        .frame(width: 42, height: 42)
+                        .background(QTheme.panelRaised)
                         .clipShape(Circle())
                 }
             }
@@ -75,97 +57,86 @@ struct DiscoverView: View {
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.secondary)
-                TextField("Cerca persone", text: $store.searchText)
+                TextField("Cerca", text: $store.searchText)
                     .textInputAutocapitalization(.never)
             }
-            .padding(.horizontal, 16)
-            .frame(height: 50)
-            .background(AppTheme.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .padding(.horizontal, 14)
+            .frame(height: 44)
+            .background(QTheme.panel)
+            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
         }
-        .padding(.top, 14)
     }
 
-    private var quickFilters: some View {
+    private var filterBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                FilterChip(title: "Tutti", icon: "sparkles", active: true)
-                FilterChip(title: "Online", icon: "circle.fill")
-                FilterChip(title: "Verificati", icon: "checkmark.seal.fill")
-                FilterChip(title: "Più vicini", icon: "location.fill")
+            HStack(spacing: 9) {
+                ForEach(store.filters, id: \.self) { filter in
+                    Button {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            store.selectedFilter = filter
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            if filter == "Online" {
+                                Circle().fill(QTheme.green).frame(width: 7, height: 7)
+                            }
+                            Text(filter)
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 15)
+                        .frame(height: 38)
+                        .background(
+                            store.selectedFilter == filter
+                            ? AnyShapeStyle(QTheme.accentGradient)
+                            : AnyShapeStyle(QTheme.panel)
+                        )
+                        .clipShape(Capsule())
+                    }
+                }
             }
         }
     }
 }
 
-struct FilterChip: View {
-    let title: String
-    let icon: String
-    var active = false
-
-    var body: some View {
-        HStack(spacing: 7) {
-            Image(systemName: icon)
-            Text(title)
-        }
-        .font(.subheadline.weight(.semibold))
-        .padding(.horizontal, 14)
-        .frame(height: 40)
-        .background(active ? AnyShapeStyle(AppTheme.gradient) : AnyShapeStyle(AppTheme.surface))
-        .clipShape(Capsule())
-    }
-}
-
-struct ProfileTile: View {
+struct ProfileCard: View {
     @EnvironmentObject var store: AppStore
     let profile: DatingProfile
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [AppTheme.violet.opacity(0.75), AppTheme.aqua.opacity(0.22), Color.black.opacity(0.88)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(height: 250)
+            Image(profile.imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(height: 236)
+                .clipped()
 
-            Image(systemName: profile.symbol)
-                .font(.system(size: 80, weight: .ultraLight))
-                .foregroundStyle(Color.white.opacity(0.82))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.bottom, 48)
-
-            LinearGradient(colors: [.clear, .black.opacity(0.88)], startPoint: .top, endPoint: .bottom)
-                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.15), .black.opacity(0.96)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
 
             VStack(alignment: .leading, spacing: 5) {
-                HStack(spacing: 6) {
+                HStack(spacing: 5) {
                     Text("\(profile.name), \(profile.age)")
                         .font(.headline.bold())
-                    if profile.isVerified {
+                    if profile.verified {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundStyle(AppTheme.aqua)
+                            .font(.caption)
+                            .foregroundStyle(QTheme.blue)
                     }
                 }
-
-                Text(profile.headline)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.84))
-                    .lineLimit(1)
-
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(profile.isOnline ? AppTheme.success : Color.gray)
+                        .fill(profile.online ? QTheme.green : Color.gray)
                         .frame(width: 7, height: 7)
                     Text(profile.distance)
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.78))
                 }
             }
-            .padding(14)
+            .padding(11)
 
             VStack {
                 HStack {
@@ -173,18 +144,23 @@ struct ProfileTile: View {
                     Button {
                         store.toggleFavorite(profile)
                     } label: {
-                        Image(systemName: store.favorites.contains(profile.id) ? "heart.fill" : "heart")
-                            .font(.headline)
-                            .foregroundStyle(store.favorites.contains(profile.id) ? AppTheme.blue : .white)
-                            .frame(width: 38, height: 38)
-                            .background(.black.opacity(0.28))
+                        Image(systemName: store.favorites.contains(profile.id) ? "star.fill" : "star")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(store.favorites.contains(profile.id) ? QTheme.yellow : .white)
+                            .frame(width: 35, height: 35)
+                            .background(.black.opacity(0.32))
                             .clipShape(Circle())
                     }
                 }
                 Spacer()
             }
-            .padding(12)
+            .padding(9)
         }
-        .frame(height: 250)
+        .frame(height: 236)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
     }
 }

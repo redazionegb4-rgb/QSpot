@@ -5,63 +5,68 @@ struct MessagesView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                AppTheme.background.ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 0) {
+                    HStack {
+                        Text("Chat")
+                            .font(.system(size: 29, weight: .bold))
+                        Spacer()
+                        Image(systemName: "square.and.pencil")
+                            .foregroundStyle(QTheme.blue)
+                            .font(.title3)
+                    }
+                    .padding(.vertical, 12)
 
-                ScrollView {
-                    VStack(spacing: 10) {
-                        ForEach(store.chats) { chat in
-                            HStack(spacing: 13) {
-                                ZStack(alignment: .bottomTrailing) {
+                    ForEach(store.chats) { chat in
+                        HStack(spacing: 12) {
+                            ZStack(alignment: .bottomTrailing) {
+                                Image(chat.profile.imageName)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 54, height: 54)
+                                    .clipShape(Circle())
+                                if chat.profile.online {
                                     Circle()
-                                        .fill(AppTheme.gradient)
-                                        .frame(width: 58, height: 58)
-                                        .overlay(
-                                            Image(systemName: chat.profile.symbol)
-                                                .font(.title2)
-                                        )
-
-                                    if chat.profile.isOnline {
-                                        Circle()
-                                            .fill(.green)
-                                            .frame(width: 13, height: 13)
-                                            .overlay(Circle().stroke(AppTheme.background, lineWidth: 2))
-                                    }
-                                }
-
-                                VStack(alignment: .leading, spacing: 5) {
-                                    HStack {
-                                        Text(chat.profile.name)
-                                            .font(.headline)
-                                        Spacer()
-                                        Text(chat.time)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-
-                                    HStack {
-                                        Text(chat.message)
-                                            .foregroundStyle(.secondary)
-                                            .lineLimit(1)
-                                        Spacer()
-                                        if chat.unread > 0 {
-                                            Text("\(chat.unread)")
-                                                .font(.caption2.bold())
-                                                .frame(width: 22, height: 22)
-                                                .background(AppTheme.blue)
-                                                .clipShape(Circle())
-                                        }
-                                    }
+                                        .fill(QTheme.green)
+                                        .frame(width: 13, height: 13)
+                                        .overlay(Circle().stroke(QTheme.background, lineWidth: 2))
                                 }
                             }
-                            .padding(14)
-                            .glassCard()
+
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(chat.profile.name)
+                                    .font(.headline)
+                                Text(chat.message)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+
+                            Spacer()
+
+                            VStack(alignment: .trailing, spacing: 7) {
+                                Text(chat.time)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                if chat.unread > 0 {
+                                    Text("\(chat.unread)")
+                                        .font(.caption2.bold())
+                                        .frame(width: 21, height: 21)
+                                        .background(QTheme.purple)
+                                        .clipShape(Circle())
+                                }
+                            }
                         }
+                        .padding(.vertical, 13)
+
+                        Divider().overlay(Color.white.opacity(0.06))
                     }
-                    .padding(16)
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
             }
-            .navigationTitle("Messaggi")
+            .background(QTheme.background)
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }

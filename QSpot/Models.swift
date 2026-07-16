@@ -1,19 +1,20 @@
 import Foundation
 
 struct DatingProfile: Identifiable, Hashable {
-    let id = UUID()
+    let id: String
     let name: String
     let age: Int
     let distance: String
-    let headline: String
     let bio: String
     let interests: [String]
-    let symbol: String
-    let isOnline: Bool
-    let isVerified: Bool
+    let imageName: String
+    let heroImageName: String
+    let online: Bool
+    let verified: Bool
+    let newProfile: Bool
 }
 
-struct ChatPreview: Identifiable {
+struct ChatItem: Identifiable {
     let id = UUID()
     let profile: DatingProfile
     let message: String
