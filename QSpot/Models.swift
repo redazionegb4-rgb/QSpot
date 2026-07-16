@@ -1,46 +1,60 @@
 import Foundation
 import CoreLocation
 
-struct PersonProfile: Identifiable, Hashable {
+struct CommunityPerson: Identifiable, Hashable {
     let id = UUID()
     let name: String
     let age: Int
+    let headline: String
     let distance: String
     let city: String
-    let bio: String
     let symbol: String
-    let isOnline: Bool
+    let colors: [String]
+    let online: Bool
+    let verified: Bool
 }
 
-struct QueerPlace: Identifiable, Hashable {
+struct CommunityPlace: Identifiable, Hashable {
     let id = UUID()
     let name: String
     let category: String
-    let city: String
+    let neighborhood: String
     let distance: String
-    let address: String
+    let rating: Double
+    let isOpen: Bool
     let symbol: String
     let latitude: Double
     let longitude: Double
-    let isOpen: Bool
-
-    var coordinate: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
+    var coordinate: CLLocationCoordinate2D { .init(latitude: latitude, longitude: longitude) }
 }
 
-enum DemoData {
-    static let people: [PersonProfile] = [
-        .init(name: "Luca", age: 28, distance: "1,2 km", city: "Roma", bio: "Aperitivi, cinema e viaggi improvvisati.", symbol: "person.crop.circle.fill", isOnline: true),
-        .init(name: "Sam", age: 25, distance: "2,8 km", city: "Roma", bio: "Cerco nuove amicizie e serate tranquille.", symbol: "sparkles", isOnline: true),
-        .init(name: "Andrea", age: 31, distance: "4,1 km", city: "Roma", bio: "Musica live, arte e passeggiate notturne.", symbol: "music.note", isOnline: false),
-        .init(name: "Alex", age: 27, distance: "5,6 km", city: "Roma", bio: "Sempre alla ricerca di posti nuovi.", symbol: "camera.fill", isOnline: true)
+struct CommunityEvent: Identifiable, Hashable {
+    let id = UUID()
+    let title: String
+    let venue: String
+    let day: String
+    let time: String
+    let symbol: String
+}
+
+enum DemoContent {
+    static let people = [
+        CommunityPerson(name: "Luca", age: 29, headline: "Caffè, viaggi e cinema", distance: "800 m", city: "Roma", symbol: "face.smiling.inverse", colors: ["purple","pink"], online: true, verified: true),
+        CommunityPerson(name: "Marco", age: 33, headline: "Cerco nuove amicizie", distance: "1,4 km", city: "Roma", symbol: "figure.walk", colors: ["cyan","blue"], online: true, verified: false),
+        CommunityPerson(name: "Alex", age: 26, headline: "Musica e serate live", distance: "2,1 km", city: "Roma", symbol: "music.note", colors: ["orange","pink"], online: false, verified: true),
+        CommunityPerson(name: "Sam", age: 31, headline: "Aperitivo questa sera?", distance: "3,2 km", city: "Roma", symbol: "sparkles", colors: ["green","cyan"], online: true, verified: true)
     ]
 
-    static let places: [QueerPlace] = [
-        .init(name: "Rainbow Bar", category: "Bar LGBTQ+", city: "Roma", distance: "900 m", address: "Via del Centro 18", symbol: "wineglass.fill", latitude: 41.9009, longitude: 12.4833, isOpen: true),
-        .init(name: "Pride Garden", category: "Parco e ritrovo", city: "Roma", distance: "1,8 km", address: "Viale Verde 7", symbol: "leaf.fill", latitude: 41.8950, longitude: 12.4900, isOpen: true),
-        .init(name: "Q Club", category: "Discoteca", city: "Roma", distance: "3,2 km", address: "Via della Notte 22", symbol: "music.mic", latitude: 41.9120, longitude: 12.4750, isOpen: false),
-        .init(name: "Casa Arcobaleno", category: "Associazione", city: "Roma", distance: "4,5 km", address: "Piazza Insieme 4", symbol: "heart.circle.fill", latitude: 41.8870, longitude: 12.5050, isOpen: true)
+    static let places = [
+        CommunityPlace(name: "Coming Out", category: "Bar LGBTQ+", neighborhood: "Colosseo", distance: "1,2 km", rating: 4.6, isOpen: true, symbol: "wineglass.fill", latitude: 41.8897, longitude: 12.4985),
+        CommunityPlace(name: "Gay Village", category: "Evento e spettacoli", neighborhood: "EUR", distance: "7,8 km", rating: 4.5, isOpen: false, symbol: "music.mic", latitude: 41.8333, longitude: 12.4667),
+        CommunityPlace(name: "Arcigay Roma", category: "Associazione", neighborhood: "San Giovanni", distance: "3,5 km", rating: 4.8, isOpen: true, symbol: "person.3.fill", latitude: 41.8831, longitude: 12.5090),
+        CommunityPlace(name: "Villa Borghese", category: "Parco e incontro", neighborhood: "Centro", distance: "2,9 km", rating: 4.7, isOpen: true, symbol: "leaf.fill", latitude: 41.9142, longitude: 12.4922)
+    ]
+
+    static let events = [
+        CommunityEvent(title: "Rainbow Aperitivo", venue: "Coming Out", day: "OGGI", time: "20:30", symbol: "wineglass.fill"),
+        CommunityEvent(title: "Queer Karaoke", venue: "Zona Pigneto", day: "VEN 17", time: "22:00", symbol: "music.mic"),
+        CommunityEvent(title: "Community Brunch", venue: "Trastevere", day: "DOM 19", time: "12:00", symbol: "cup.and.saucer.fill")
     ]
 }

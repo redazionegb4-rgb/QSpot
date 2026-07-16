@@ -1,49 +1,42 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @AppStorage("displayName") private var displayName = "Il tuo profilo"
-    @AppStorage("profileBio") private var profileBio = "Racconta qualcosa di te..."
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
-    @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = true
+    @State private var travelMode = false
 
     var body: some View {
-        Form {
-            Section {
-                HStack(spacing: 16) {
-                    Circle()
-                        .fill(LinearGradient(colors: [Color.qPurple, Color.qPink], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(width: 74, height: 74)
-                        .overlay(Image(systemName: "person.fill").font(.largeTitle).foregroundStyle(.white))
-                    VStack(alignment: .leading) {
-                        TextField("Nome", text: $displayName).font(.title3.bold())
-                        Text("Profilo locale demo").foregroundStyle(.secondary)
+        ZStack {
+            AppBackground()
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 22) {
+                    HStack { Text("Profilo").font(.system(size: 34, weight: .bold, design: .rounded)); Spacer(); Button(action: {}) { Image(systemName: "gearshape.fill").frame(width: 44, height: 44).glassCard(radius: 15) } }
+                    ZStack(alignment: .bottomTrailing) {
+                        Circle().fill(LinearGradient(colors: [.appPurple, .appPink], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 126, height: 126).overlay(Image(systemName: "person.fill").font(.system(size: 54)).foregroundStyle(.white))
+                        Image(systemName: "camera.fill").padding(10).background(.white, in: Circle()).foregroundStyle(.appPurple)
                     }
-                }
+                    VStack(spacing: 5) { HStack { Text("Il tuo profilo").font(.title2.bold()); Image(systemName: "checkmark.seal.fill").foregroundStyle(.appCyan) }; Text("Completa il profilo per farti conoscere").foregroundStyle(.secondary) }
+                    HStack(spacing: 10) { ProfileMetric(value: "0", label: "Like"); ProfileMetric(value: "0", label: "Match"); ProfileMetric(value: "3", label: "Preferiti") }
+                    VStack(spacing: 0) {
+                        ProfileRow(icon: "person.text.rectangle", title: "Modifica profilo", subtitle: "Foto, bio e interessi")
+                        Divider().overlay(.white.opacity(0.08))
+                        ProfileRow(icon: "slider.horizontal.3", title: "Preferenze", subtitle: "Chi vuoi conoscere")
+                        Divider().overlay(.white.opacity(0.08))
+                        Toggle(isOn: $travelMode) { Label("Modalità viaggio", systemImage: "airplane") }.padding(16)
+                        Divider().overlay(.white.opacity(0.08))
+                        ProfileRow(icon: "shield.checkered", title: "Privacy e sicurezza", subtitle: "Posizione, blocchi e segnalazioni")
+                    }.glassCard(radius: 24)
+                    Button("Mostra di nuovo la presentazione") { hasSeenWelcome = false }.font(.subheadline).foregroundStyle(.secondary)
+                }.padding(18)
             }
-
-            Section("Descrizione") {
-                TextField("Bio", text: $profileBio, axis: .vertical)
-                    .lineLimit(3...6)
-            }
-
-            Section("Preferenze") {
-                Label("Posizione approssimativa", systemImage: "location.circle.fill")
-                Label("Solo maggiorenni", systemImage: "18.circle.fill")
-                Label(colorScheme == .dark ? "Tema scuro attivo" : "Tema chiaro attivo", systemImage: "circle.lefthalf.filled")
-            }
-
-            Section("Prossimamente") {
-                Label("Account Supabase", systemImage: "person.badge.key.fill")
-                Label("Caricamento fotografie", systemImage: "photo.fill")
-                Label("Chat e notifiche", systemImage: "bubble.left.and.bubble.right.fill")
-                Label("Blocchi e segnalazioni", systemImage: "shield.fill")
-            }
-
-            Section {
-                Button("Rivedi introduzione") { hasCompletedOnboarding = false }
-                    .foregroundStyle(Color.qPurple)
-            }
-        }
-        .navigationTitle("Profilo")
+        }.toolbar(.hidden, for: .navigationBar).foregroundStyle(.white)
     }
+}
+
+private struct ProfileMetric: View {
+    let value: String; let label: String
+    var body: some View { VStack(spacing: 3) { Text(value).font(.title2.bold()); Text(label).font(.caption).foregroundStyle(.secondary) }.frame(maxWidth: .infinity).padding(.vertical, 15).glassCard(radius: 18) }
+}
+private struct ProfileRow: View {
+    let icon: String; let title: String; let subtitle: String
+    var body: some View { HStack(spacing: 13) { Image(systemName: icon).font(.title3).foregroundStyle(.appCyan).frame(width: 28); VStack(alignment: .leading, spacing: 3) { Text(title).font(.headline); Text(subtitle).font(.caption).foregroundStyle(.secondary) }; Spacer(); Image(systemName: "chevron.right").foregroundStyle(.secondary) }.padding(16) }
 }

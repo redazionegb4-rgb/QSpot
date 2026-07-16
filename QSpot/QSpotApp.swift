@@ -2,15 +2,18 @@ import SwiftUI
 
 @main
 struct QSpotApp: App {
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
 
     var body: some Scene {
         WindowGroup {
-            if hasCompletedOnboarding {
-                RootView()
-            } else {
-                OnboardingView()
+            Group {
+                if hasSeenWelcome {
+                    MainTabView()
+                } else {
+                    WelcomeView()
+                }
             }
+            .preferredColorScheme(nil)
         }
     }
 }
